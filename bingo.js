@@ -8,6 +8,76 @@ let historialNumeros = [];
 let automaticoActivo = false;
 let numeroTecla = '';
 
+let imgContainer = document.getElementById("contenedor-imagen");
+let imgFlotante = document.getElementById("imagen-flotante");
+let inputFile = document.getElementById("cargar-imagen");
+let isResizing = false;
+
+// Abrir el input de cargar imagen con clic derecho
+function abrirCargarImagen(event) {
+    event.preventDefault(); // Previene el menú contextual del clic derecho
+    inputFile.click();
+}
+
+
+
+// Mover la imagen
+imgContainer.addEventListener('mousedown', function(e) {
+    let shiftX = e.clientX - imgContainer.getBoundingClientRect().left;
+    let shiftY = e.clientY - imgContainer.getBoundingClientRect().top;
+
+    function moveAt(pageX, pageY) {
+        imgContainer.style.left = pageX - shiftX + 'px';
+        imgContainer.style.top = pageY - shiftY + 'px';
+    }
+
+    function onMouseMove(e) {
+        moveAt(e.pageX, e.pageY);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+
+    imgContainer.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        imgContainer.onmouseup = null;
+    };
+});
+
+imgContainer.ondragstart = function() {
+    return false;
+};
+
+// Cambiar el tamaño de la imagen
+imgContainer.addEventListener('mousemove', function(e) {
+    if (isResizing) {
+        imgContainer.style.width = e.clientX - imgContainer.getBoundingClientRect().left + 'px';
+        imgContainer.style.height = e.clientY - imgContainer.getBoundingClientRect().top + 'px';
+    }
+});
+
+imgContainer.addEventListener('mousedown', function(e) {
+    if (e.target === imgContainer) {
+        isResizing = true;
+    }
+});
+
+imgContainer.addEventListener('mouseup', function() {
+    isResizing = false;
+});
+
+inputFile.addEventListener('change', function(event) {
+    let file = event.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            imgFlotante.src = e.target.result;
+            imgFlotante.style.display = 'block'; // Mostrar imagen cargada
+            imgContainer.style.border = 'none';  // Ocultar borde cuando la imagen está presente
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
 // Función para manejar el clic en una celda
 bingoTable.addEventListener('click', function(event) {
     if (event.target.tagName === 'TD') {
@@ -32,10 +102,14 @@ function actualizarNumeros(numero) {
 
         // Mostrar los últimos dos números en la parte superior
         numerosPrevios.textContent = historialNumeros.slice(-3, -1).join(', ');
-        
+
+        // Obtener la letra correspondiente
+        const letra = obtenerLetra(parseInt(numero));
+
         // Aplicar la animación solo cuando se marca un nuevo número
-        numeroGrande.textContent = numero;
+        numeroGrande.textContent = letra + " " + numero; // Concatenar letra y número
         numeroGrande.style.animation = 'animarNumero 3s ease';
+        
         // Quitar la animación después de que termine
         setTimeout(() => {
             numeroGrande.style.animation = 'none';
@@ -45,6 +119,22 @@ function actualizarNumeros(numero) {
     }
 }
 
+
+// Función para obtener la letra correspondiente según el número
+function obtenerLetra(numero) {
+    if (numero >= 1 && numero <= 15) {
+        return 'B';
+    } else if (numero >= 16 && numero <= 30) {
+        return 'I';
+    } else if (numero >= 31 && numero <= 45) {
+        return 'N';
+    } else if (numero >= 46 && numero <= 60) {
+        return 'G';
+    } else if (numero >= 61 && numero <= 75) {
+        return 'O';
+    }
+    return ''; // Retorna una cadena vacía si el número no está en el rango válido
+}
 // Función para marcar un número aleatorio
 function marcarAleatorio() {
     const todasCeldas = Array.from(document.querySelectorAll('td'));

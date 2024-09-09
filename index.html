@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bingo de 75 Números</title>
+    <title>Bingo Liceo Santa Fe</title>
     <style>
+        /* Elimina márgenes y rellenos para todos los elementos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
             font-weight: bold;
+            width: 100vw; /* Asegura que el cuerpo ocupe todo el ancho */
+            height: 100vh; /* Asegura que el cuerpo ocupe toda la altura */
+            overflow: hidden; /* Evita el desplazamiento */
         }
+
         table {
             border-collapse: collapse;
-            margin: 20px auto;
+            margin: 0 auto; /* Centra la tabla horizontalmente */
         }
+
         th, td {
-	    font-size: 40px;
+            font-size: 40px;
             border: 8px solid #003366;
             padding: 15px;
             text-align: center;
@@ -24,53 +36,34 @@
             color: white;
             font-weight: bold; /* Números más grandes y en negrilla */
         }
+
         th {
             background-color: #f0f0f0; /* Fondo blanco para celdas de "BINGO" */
             color: black; /* Texto negro para celdas de "BINGO" */
         }
+
         .highlight {
             background-color: yellow;
             color: black;
         }
-@keyframes animarNumero {
+
+ @keyframes animarNumero {
     0% {
-        font-size: 200px; /* Tamaño inicial */
-        transform: scale(1);
+        font-size: 110px; /* Tamaño inicial */
+        transform: translateY(0) scale(1); /* Sin desplazamiento */
     }
     50% {
-        font-size: 300px; /* Tamaño grande */
-        transform: scale(1.5); /* Aumenta el tamaño */
+        font-size: 110px; /* Tamaño grande */
+        transform: translateY(-5px) scale(1.5); /* Subir 5px y agrandar */
     }
     100% {
-        font-size: 200px; /* Tamaño original */
-        transform: scale(1);
+        font-size: 110px; /* Tamaño original */
+        transform: translateY(0) scale(1); /* Volver a la posición original */
     }
 }
 
-#numero-grande {
-    font-size: 200px; /* Tamaño inicial */
-    text-align: center;
-    margin-top: 20px;
-    background-color: white;
-    color: blue;
-    border-radius: 50%;
-    width: 250px;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
-    animation: none; /* Inicialmente sin animación */
-}
-
-
-/* Clase de animación */
-#numero-grande.animar {
-    animation: animarNumero 1s ease; /* Aplica la animación de 1 segundo */
-}
         #numero-grande {
-            font-size: 200px; /* Tamaño triplicado */
+            font-size: 110px; /* Tamaño inicial */
             text-align: center;
             margin-top: 20px;
             background-color: white;
@@ -83,22 +76,49 @@
             justify-content: center;
             margin-left: auto;
             margin-right: auto;
+            animation: none; /* Inicialmente sin animación */
         }
+
+        #numero-grande.animar {
+            animation: animarNumero 1s ease; /* Aplica la animación de 1 segundo */
+        }
+
         #numeros-previos {
             font-size: 50px;
             text-align: center;
             margin-top: 20px;
         }
-#controls {
-    position: absolute; /* Permite el posicionamiento absoluto del contenedor */
-    top: 20px; /* Posición inicial desde la parte superior */
-    left: 20px; /* Posición inicial desde la izquierda */
+
+   #controls {
+    position: absolute;
+    bottom: 150px; /* Posición en la parte inferior de la página */
+    left: 25%; /* Centra el menú horizontalmente */
+    transform: translateX(-50%); /* Ajusta para que quede completamente centrado */
     display: flex;
-    flex-direction: column; /* Alinea los botones en vertical */
-    align-items: center; /* Centra los botones horizontalmente dentro del contenedor */
+    flex-direction: column;
+    align-items: center;
     margin: 0;
-    cursor: move; /* Cambia el cursor para indicar que el elemento es movible */
+    cursor: move;
 }
+
+#contenedor-imagen {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    width: 200px;
+    height: auto;
+    resize: both;
+    overflow: auto;
+    border: 2px solid transparent; /* Se oculta el borde inicialmente */
+}
+
+#imagen-flotante {
+    width: 100%;
+    height: auto;
+    display: none;
+}
+
+
         button {
             background-color: #444;
             color: white;
@@ -108,15 +128,16 @@
             margin: 5px;
             display: block;
             width: 200px;
-            margin-left: auto;
-            margin-right: auto;
         }
+
         button:hover {
             background-color: #666;
         }
+
         input[type="range"] {
             width: 200px;
         }
+
         .estado-automatico {
             width: 15px;
             height: 15px;
@@ -125,6 +146,7 @@
             margin-left: 10px;
             background-color: red; /* Color inicial cuando está detenido */
         }
+
         .estado-automatico.active {
             background-color: green; /* Color cuando está activo */
         }
@@ -163,8 +185,16 @@
         <input type="range" id="velocidad" min="1" max="100" value="50">
         <span id="status-indicator" class="estado-automatico"></span>
     </div>
-
-    <script src="bingo.js"></script>
+<div id="contenedor-imagen" oncontextmenu="abrirCargarImagen(event)">
+    <img id="imagen-flotante" src="" alt="Imagen Flotante">
+    <input type="file" id="cargar-imagen" accept="image/*" style="display: none;">
+</div>
+    <script src="bingo.js">
+    function marcarNumero(numero) {
+        mostrarNumeroGrande(numero);
+        // Aquí puedes agregar lógica adicional si es necesario
+    }
+</script>
 
 </body>
 </html>
